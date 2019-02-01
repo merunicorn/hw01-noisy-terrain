@@ -1,6 +1,8 @@
 Amy Chen
 amyjchen
 
+https://merunicorn.github.io/hw01-noisy-terrain/
+
 Adam’s Lava: https://www.shadertoy.com/view/WsSGDw
 Conceptual reference: https://www.shadertoy.com/view/XdyfR1
 GraphToy for remapping: http://www.iquilezles.org/apps/graphtoy/
