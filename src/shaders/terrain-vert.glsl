@@ -6,7 +6,7 @@ uniform mat4 u_ModelInvTr;
 uniform mat4 u_ViewProj;
 uniform vec2 u_PlanePos; // Our location in the virtual world displayed by the plane
 uniform int u_Time;
-uniform vec3 u_Color;
+uniform int u_Color;
 uniform int u_Anim;
 
 in vec4 vs_Pos;
@@ -21,6 +21,9 @@ out float fs_Sine;
 out float fs_FBM;
 out float fs_Worley;
 out float fs_Rock;
+out float fs_guiCol;
+out float fs_guiSan;
+out float fs_Time;
 
 float random1( vec2 p , vec2 seed) {
   return fract(sin(dot(p + seed, vec2(127.1, 311.7))) * 43758.5453);
@@ -71,7 +74,7 @@ vec2 fbm(vec2 uv) {
 }
 
 //Worley Noise (Adam's code)
-float WorleyNoise(vec2 uv)
+float WorleyNoise(vec2 uv, int j)
 {
     // Tile the space
     vec2 uvInt = floor(uv);
@@ -88,7 +91,11 @@ float WorleyNoise(vec2 uv)
             vec2 point = random2(uvInt + neighbor, vec2(10.0));
 
             // Animate the point
-            //point = 0.5 + 0.5 * sin(iTime + 6.2831 * point); // 0 to 1 range
+            /*
+            if (u_Anim == 1 && j == 1) {
+              point = vec2(sin(float(u_Time) + 3.1415 * point.x),
+                           sin(float(u_Time) + 3.1415 * point.y));
+            }*/
 
             // Compute the distance b/t the point and the fragment
             // Store the min dist thus far
@@ -105,13 +112,27 @@ void main()
   fs_Pos = vs_Pos.xyz;
   vec2 fbm_mid = fbm((vs_Pos.xz/2.0) + u_PlanePos.xy * 0.4);
   fs_FBM = vs_Pos.y + fbm_mid.x;
-  fs_Worley = WorleyNoise((vs_Pos.xz/8.0) + u_PlanePos.xy * 0.4);
-  vec2 rock_noise = vec2(1.0, 1.0) - fbm(vec2(WorleyNoise((vs_Pos.xz/10.0) + u_PlanePos.xy * 0.4))*2.2);
+  fs_Worley = WorleyNoise((vs_Pos.xz/8.0) + u_PlanePos.xy * 0.4, 1);
+  vec2 rock_noise = vec2(1.0, 1.0) - fbm(vec2(WorleyNoise((vs_Pos.xz/10.0) + u_PlanePos.xy * 0.4, 0))*2.2);
   float remap1 = clamp(sin(rock_noise.x * 10.0) / 3.0, 0.0, 1.0);
   if (remap1 < 0.05) {
     remap1 = 0.0;
   }
   fs_Rock = remap1 * 10.0;
+  if (u_Anim == 1) {
+    fs_guiCol = 1.0;
+  }
+  else {
+    fs_guiCol = 0.0;
+  }
+  if (u_Color == 1) {
+    fs_guiSan = 1.0;
+  }
+  else {
+    fs_guiSan = 0.0;
+  }
+
+  fs_Time = float(u_Time);
 
   vec4 modelposition = vec4(vs_Pos.x, fs_Rock + fs_FBM * 0.5, vs_Pos.z, 1.0);
   modelposition = u_Model * modelposition;

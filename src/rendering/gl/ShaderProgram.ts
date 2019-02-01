@@ -92,10 +92,10 @@ class ShaderProgram {
     }
   }
 
-  setSandColor(color: vec4) {
+  setSandColor(col: number) {
     this.use();
-    if (this.unifColor !== -1) {
-      gl.uniform4fv(this.unifColor, color);
+    if (this.unifCustomCol !== -1) {
+      gl.uniform1i(this.unifCustomCol, col);
     }
   }
 

@@ -13,7 +13,7 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 const controls = {
   tesselations: 5,
   'Load Scene': loadScene, // A function pointer, essentially
-  color: [1, 0, 0],
+  sandy: false,
   animated: false,
 };
 
@@ -24,7 +24,7 @@ let aPressed: boolean;
 let sPressed: boolean;
 let dPressed: boolean;
 let planePos: vec2;
-let prevColor: number[] = [1,0,0];
+let sandBool: boolean = false;
 let animBool: boolean = false;
 let time: number = 0;
 
@@ -88,7 +88,7 @@ function main() {
   // Add controls to the gui
   const gui = new DAT.GUI();
   gui.add(controls, 'Load Scene');
-  gui.addColor(controls, 'color');
+  gui.add(controls, 'sandy');
   gui.add(controls, 'animated');
 
   // get canvas and webgl context
@@ -150,19 +150,25 @@ function main() {
     processKeyPresses();
 
     //dat.GUI controls
-    if (controls.color != prevColor) {
-      prevColor = controls.color;
+    if (controls.sandy == true) {
+      sandBool = true;
+    }
+    else {
+      sandBool = false;
     }
     if(controls.animated == true) {
       animBool = true;
     }
+    else {
+      animBool = false;
+    }
 
     renderer.render(camera, lambert, [
       plane], 
-      vec4.fromValues(prevColor[0],prevColor[1],prevColor[2],1), time, animBool);
+      sandBool, time, animBool);
     renderer.render(camera, flat, [
       square],
-      vec4.fromValues(prevColor[0],prevColor[1],prevColor[2],1), time, animBool);
+      sandBool, time, animBool);
     stats.end();
 
     // Tell the browser to call `tick` again whenever it renders a new frame

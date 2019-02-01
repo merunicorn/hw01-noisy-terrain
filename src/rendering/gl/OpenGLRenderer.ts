@@ -23,7 +23,7 @@ class OpenGLRenderer {
   }
 
   render(camera: Camera, prog: ShaderProgram, drawables: Array<Drawable>,
-         col: vec4, time: number, anim: boolean) {
+         sand: boolean, time: number, anim: boolean) {
     let model = mat4.create();
     let viewProj = mat4.create();
     let color = vec4.fromValues(1, 0, 0, 1);
@@ -39,7 +39,13 @@ class OpenGLRenderer {
       prog.setAnim(0);
     }
     prog.setTime(time);
-    prog.setSandColor(col);
+    if (sand) {
+      prog.setSandColor(1);
+    }
+    else {
+      prog.setSandColor(0);
+    }
+    
 
     for (let drawable of drawables) {
       prog.draw(drawable);
