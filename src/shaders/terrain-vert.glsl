@@ -16,7 +16,7 @@ out vec4 fs_Col;
 
 out float fs_Sine;
 out float fs_FBM;
-//out float fs_Worley;
+out float fs_Worley;
 
 float random1( vec2 p , vec2 seed) {
   return fract(sin(dot(p + seed, vec2(127.1, 311.7))) * 43758.5453);
@@ -67,7 +67,6 @@ vec2 fbm(vec2 uv) {
 }
 
 //Worley Noise (Adam's code)
-/*
 float WorleyNoise(vec2 uv)
 {
     // Tile the space
@@ -77,14 +76,12 @@ float WorleyNoise(vec2 uv)
     float minDist = 1.0; // Minimum distance initialized to max.
 
     // Search all neighboring cells and this cell for their point
-    for(int y = -1; y <= 1; y++)
-    {
-        for(int x = -1; x <= 1; x++)
-        {
+    for(int y = -1; y <= 1; y++) {
+        for(int x = -1; x <= 1; x++) {
             vec2 neighbor = vec2(float(x), float(y));
 
             // Random point inside current neighboring cell
-            vec2 point = random2(uvInt + neighbor);
+            vec2 point = random2(uvInt + neighbor, vec2(10.0));
 
             // Animate the point
             //point = 0.5 + 0.5 * sin(iTime + 6.2831 * point); // 0 to 1 range
@@ -97,14 +94,15 @@ float WorleyNoise(vec2 uv)
         }
     }
     return minDist;
-}*/
+}
 
 void main()
 {
-  //fs_Worley = WorleyNoise((vs_Pos.xz) + u_PlanePos.xy);
+  
   fs_Pos = vs_Pos.xyz;
-  vec2 fbm_mid = fbm((vs_Pos.xz/2.0) + u_PlanePos.xy);
+  vec2 fbm_mid = fbm((vs_Pos.xz/2.0) + u_PlanePos.xy * 0.4);
   fs_FBM = vs_Pos.y + fbm_mid.x;
+  fs_Worley = WorleyNoise((vs_Pos.xz/8.0) + u_PlanePos.xy * 0.4);
   fs_Sine = (sin((vs_Pos.x + u_PlanePos.x) * 3.14159 * 0.1) + cos((vs_Pos.z + u_PlanePos.y) * 3.14159 * 0.1)); //[0-2]
   
   vec4 modelposition = vec4(vs_Pos.x, fs_FBM * 0.5, vs_Pos.z, 1.0);
