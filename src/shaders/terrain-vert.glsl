@@ -5,6 +5,9 @@ uniform mat4 u_Model;
 uniform mat4 u_ModelInvTr;
 uniform mat4 u_ViewProj;
 uniform vec2 u_PlanePos; // Our location in the virtual world displayed by the plane
+uniform int u_Time;
+uniform vec3 u_Color;
+uniform int u_Anim;
 
 in vec4 vs_Pos;
 in vec4 vs_Nor;

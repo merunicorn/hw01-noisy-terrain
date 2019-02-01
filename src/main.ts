@@ -1,4 +1,4 @@
-import {vec2, vec3} from 'gl-matrix';
+import {vec2, vec3, vec4} from 'gl-matrix';
 import * as Stats from 'stats-js';
 import * as DAT from 'dat-gui';
 import Square from './geometry/Square';
@@ -13,6 +13,8 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 const controls = {
   tesselations: 5,
   'Load Scene': loadScene, // A function pointer, essentially
+  color: [1, 0, 0],
+  animated: false,
 };
 
 let square: Square;
@@ -22,6 +24,9 @@ let aPressed: boolean;
 let sPressed: boolean;
 let dPressed: boolean;
 let planePos: vec2;
+let prevColor: number[] = [1,0,0];
+let animBool: boolean = false;
+let time: number = 0;
 
 function loadScene() {
   square = new Square(vec3.fromValues(0, 0, 0));
@@ -82,6 +87,9 @@ function main() {
 
   // Add controls to the gui
   const gui = new DAT.GUI();
+  gui.add(controls, 'Load Scene');
+  gui.addColor(controls, 'color');
+  gui.add(controls, 'animated');
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -134,17 +142,27 @@ function main() {
 
   // This function will be called every frame
   function tick() {
+    time++;
     camera.update();
     stats.begin();
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     renderer.clear();
     processKeyPresses();
+
+    //dat.GUI controls
+    if (controls.color != prevColor) {
+      prevColor = controls.color;
+    }
+    if(controls.animated == true) {
+      animBool = true;
+    }
+
     renderer.render(camera, lambert, [
-      plane,
-    ]);
+      plane], 
+      vec4.fromValues(prevColor[0],prevColor[1],prevColor[2],1), time, animBool);
     renderer.render(camera, flat, [
-      square,
-    ]);
+      square],
+      vec4.fromValues(prevColor[0],prevColor[1],prevColor[2],1), time, animBool);
     stats.end();
 
     // Tell the browser to call `tick` again whenever it renders a new frame

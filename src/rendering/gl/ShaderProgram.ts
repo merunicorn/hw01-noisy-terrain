@@ -1,4 +1,4 @@
-import {vec2, vec4, mat4} from 'gl-matrix';
+import {vec2, vec4, vec3, mat4} from 'gl-matrix';
 import Drawable from './Drawable';
 import {gl} from '../../globals';
 
@@ -30,6 +30,9 @@ class ShaderProgram {
   unifViewProj: WebGLUniformLocation;
   unifColor: WebGLUniformLocation;
   unifPlanePos: WebGLUniformLocation;
+  unifTime: WebGLUniformLocation;
+  unifCustomCol: WebGLUniformLocation;
+  unifAnimBool: WebGLUniformLocation;
 
   constructor(shaders: Array<Shader>) {
     this.prog = gl.createProgram();
@@ -49,6 +52,9 @@ class ShaderProgram {
     this.unifModelInvTr = gl.getUniformLocation(this.prog, "u_ModelInvTr");
     this.unifViewProj   = gl.getUniformLocation(this.prog, "u_ViewProj");
     this.unifPlanePos   = gl.getUniformLocation(this.prog, "u_PlanePos");
+    this.unifTime   = gl.getUniformLocation(this.prog, "u_Time");
+    this.unifCustomCol   = gl.getUniformLocation(this.prog, "u_Color");
+    this.unifAnimBool   = gl.getUniformLocation(this.prog, "u_Anim");
   }
 
   use() {
@@ -83,6 +89,27 @@ class ShaderProgram {
     this.use();
     if (this.unifPlanePos !== -1) {
       gl.uniform2fv(this.unifPlanePos, pos);
+    }
+  }
+
+  setSandColor(color: vec4) {
+    this.use();
+    if (this.unifColor !== -1) {
+      gl.uniform4fv(this.unifColor, color);
+    }
+  }
+
+  setTime(t: number) {
+    this.use();
+    if(this.unifTime != -1) {
+      gl.uniform1i(this.unifTime, t);
+    }
+  }
+
+  setAnim(anim: number) {
+    this.use();
+    if(this.unifAnimBool != -1) {
+      gl.uniform1i(this.unifAnimBool, anim);
     }
   }
 
