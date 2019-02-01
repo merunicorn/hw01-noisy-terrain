@@ -90,13 +90,6 @@ float WorleyNoise(vec2 uv, int j)
             // Random point inside current neighboring cell
             vec2 point = random2(uvInt + neighbor, vec2(10.0));
 
-            // Animate the point
-            /*
-            if (u_Anim == 1 && j == 1) {
-              point = vec2(sin(float(u_Time) + 3.1415 * point.x),
-                           sin(float(u_Time) + 3.1415 * point.y));
-            }*/
-
             // Compute the distance b/t the point and the fragment
             // Store the min dist thus far
             vec2 diff = neighbor + point - uvFract;
@@ -111,6 +104,9 @@ void main()
 {
   fs_Pos = vs_Pos.xyz;
   vec2 fbm_mid = fbm((vs_Pos.xz/2.0) + u_PlanePos.xy * 0.4);
+  if (u_Color == 1) {
+    fbm_mid = fbm((vs_Pos.xz*3.0) + u_PlanePos.xy * 0.4);
+  }
   fs_FBM = vs_Pos.y + fbm_mid.x;
   fs_Worley = WorleyNoise((vs_Pos.xz/8.0) + u_PlanePos.xy * 0.4, 1);
   vec2 rock_noise = vec2(1.0, 1.0) - fbm(vec2(WorleyNoise((vs_Pos.xz/10.0) + u_PlanePos.xy * 0.4, 0))*2.2);

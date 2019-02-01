@@ -59,7 +59,7 @@ void main()
     float t = clamp(smoothstep(40.0, 50.0, length(fs_Pos)), 0.0, 1.0); // Distance fog
 
     if(fs_guiSan == 1.0) {
-        sand_Col = vec3(255.0 / 255.0, 249.0 / 255.0, 99.0 / 255.0);
+        sand_Col = vec3(255.0 / 255.0, 165.0 / 255.0, 99.0 / 255.0);
     }
     else {
         sand_Col = vec3(255.0 / 255.0, 229.0 / 255.0, 99.0 / 255.0);
